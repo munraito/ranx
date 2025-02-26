@@ -19,7 +19,9 @@ def _recall(qrels, run, k, rel_lvl):
     if k == 0:
         return 0.0
 
-    return _hits(qrels, run, k, rel_lvl) / qrels.shape[0]
+    # Use k as the denominator if total relevant documents exceed k
+    denominator = k if len(qrels) > k else qrels.shape[0]
+    return _hits(qrels, run, k, rel_lvl) / denominator
 
 
 @njit(cache=True, parallel=True)
